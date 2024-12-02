@@ -32,7 +32,7 @@ def tryRemovingForAscending(report)
   new_report = report.dup
   (report.count - 1).times do |i|
     if new_report[i] >= new_report[i+1]
-      new_report.delete_at(i)
+      new_report.delete_at(i + 1)
       return new_report
     end
   end
@@ -43,7 +43,7 @@ def tryRemovingForDescending(report)
   new_report = report.dup
   (new_report.count - 1).times do |i|
     if new_report[i] <= new_report[i+1]
-      new_report.delete_at(i)
+      new_report.delete_at(i + 1)
       return new_report
     end
   end
@@ -67,7 +67,7 @@ def tryRemovingForDiffSafe(report)
     diffWithNext = new_report[i] - new_report[i+1]
     diffWithNext = diffWithNext.abs
     if diffWithNext > 3 || diffWithNext < 1
-      new_report.delete_at(i)
+      new_report.delete_at(i + 1)
       return new_report
     end
   end
