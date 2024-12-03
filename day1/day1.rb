@@ -4,6 +4,7 @@ $leftList = []
 $rightList = []
 $totalDistance = 0
 $totalSimilarity = 0
+$hashOfRight = {}
 
 def createLists()
   File.open("input1.txt").each do |line|
@@ -18,23 +19,28 @@ def orderLists()
   $rightList.sort!
 end
 
+def createHashOfRight()
+  $rightList.each do |right|
+    if $hashOfRight[right].nil?
+      $hashOfRight[right] = 1
+    else
+      $hashOfRight[right] += 1
+    end
+  end
+end
+
 createLists()
 orderLists()
+createHashOfRight()
 
 $leftList.count.times do |i|
   distance = $leftList[i] - $rightList[i]
-  if distance < 0
-    distance = distance * -1
-  end
+  distance = distance.abs
   $totalDistance += distance
-
-  nbOfSame = 0
-  $rightList.each do |right|
-    if $leftList[i] == right
-      nbOfSame += 1
-    end
+  
+  if !$hashOfRight[$leftList[i]].nil?
+    $totalSimilarity += $hashOfRight[$leftList[i]] * $leftList[i]
   end
-  $totalSimilarity += nbOfSame * $leftList[i]
 end
 
 
