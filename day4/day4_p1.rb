@@ -23,31 +23,6 @@ def getvertical(lines)
 end
 
 def getDiagonal(lines)
-  # x=1 , y=2 -> lines[2][1]
-
-  # lines
-  # [
-  #   [1, 2, 3],
-  #   [4, 5, 6],
-  #   [7, 8, 9]
-  # ]
-  # 5 diagonals
-  # [
-  #   [1, 2, 3, 3],
-  #   [1, 2, 3, 3],
-  #   [4, 5, 6, 3],
-  #   [7, 8, 9, 3]
-  # ]
-  # 7 diagonals
-  # [
-  #   [1, 2, 3, 3, 3],
-  #   [1, 2, 3, 3, 3],
-  #   [1, 2, 3, 3, 3],
-  #   [4, 5, 6, 3, 3],
-  #   [7, 8, 9, 3, 3]
-  # ]
-  # 9 diagonals
-  #output = [[7],[4,8],[1,5,9],[2,6],[3]]
   diagonals = []
   (1 + ((lines.length - 1) * 2)).times do |i|
     diagonals.push([])
