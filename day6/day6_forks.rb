@@ -59,43 +59,32 @@ def simulate_guard(map, startCoordinates, vector, loop_position)
   visitedCoordinates.push(startCoordinates)
   currentCoordinates = startCoordinates
   insideTheMap = true
-  nbLoops = 0
 
   while insideTheMap
-    if nbLoops > 2
-      return visitedCoordinates, true # Loop detected
-    end
 
     nextY = currentCoordinates[:y] + vector[:y]
     nextX = currentCoordinates[:x] + vector[:x]
 
-    if nextY < 0 || nextY >= map.size || nextX < 0 || nextX >= map[0].size
+    unless (0...map.size).cover?(nextY) && (0...map[0].size).cover?(nextX)
       insideTheMap = false
       next
     end
 
     if map[nextY][nextX] == "#"
-      if loop_position != nil
-        state = { coordinates: currentCoordinates, vector: vector }
-        if visitedStates.include?(state)
-          return visitedCoordinates, true # Loop detected
-        else
-          visitedStates.push(state)
-        end
+      state = { coordinates: currentCoordinates, vector: vector }
+      if visitedStates.include?(state)
+        return visitedCoordinates, true # Loop detected
+      else
+        visitedStates.push(state)
       end
 
       vector = rotateVector(vector)
-      if loop_position != nil && loop_position[:x] == nextX && loop_position[:y] == nextY
-        nbLoops += 1
-      end
     else
       currentCoordinates = {x: nextX, y: nextY}
-      unless visitedCoordinates.include?(currentCoordinates)
-        visitedCoordinates.push(currentCoordinates)
-      end
+      visitedCoordinates.push(currentCoordinates)
     end
   end
-
+  visitedCoordinates.uniq!
   return visitedCoordinates, false # No loop detected
 end
 
