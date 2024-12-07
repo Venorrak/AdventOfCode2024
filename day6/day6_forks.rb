@@ -53,9 +53,8 @@ def showMap(map, visitedCoordinates)
   end
 end
 
-def simulate_guard(map, startCoordinates, vector, loop_position)
+def simulate_guard(map, startCoordinates, vector)
   visitedCoordinates = []
-  visitedStates = []
   visitedCoordinates.push(startCoordinates)
   currentCoordinates = startCoordinates
   insideTheMap = true
@@ -71,21 +70,43 @@ def simulate_guard(map, startCoordinates, vector, loop_position)
     end
 
     if map[nextY][nextX] == "#"
-      state = { coordinates: currentCoordinates, vector: vector }
-      if visitedStates.include?(state)
-        return visitedCoordinates, true # Loop detected
-      else
-        visitedStates.push(state)
-      end
-
       vector = rotateVector(vector)
     else
       currentCoordinates = {x: nextX, y: nextY}
-      visitedCoordinates.push(currentCoordinates)
     end
+    visitedCoordinates.push(currentCoordinates)
   end
   visitedCoordinates.uniq!
-  return visitedCoordinates, false # No loop detected
+  return visitedCoordinates
+end
+
+def simulate_guard_loop(map, startCoordinates, vector)
+  visitedStates = []
+  currentCoordinates = startCoordinates
+  insideTheMap = true
+
+  while insideTheMap
+    nextY = currentCoordinates[:y] + vector[:y]
+    nextX = currentCoordinates[:x] + vector[:x]
+
+    unless (0...map.size).cover?(nextY) && (0...map[0].size).cover?(nextX)
+      insideTheMap = false
+      next
+    end
+
+    if map[nextY][nextX] == "#"
+      state = { coordinates: currentCoordinates, vector: vector }
+      if visitedStates.include?(state)
+        return true # Loop detected
+      else
+        visitedStates.push(state)
+      end
+      vector = rotateVector(vector)
+    else
+      currentCoordinates = {x: nextX, y: nextY}
+    end
+  end
+  return false # No loop detected
 end
 
 def getWorkerMessage(worker)
@@ -106,7 +127,7 @@ map = createInput("input6.txt")
 startCoordinates = getCoordinatesOfStart(map)
 vector = {x: 0, y: -1}
 
-visitedCoordinates, _ = simulate_guard(map, startCoordinates, vector, nil)
+visitedCoordinates = simulate_guard(map, startCoordinates, vector)
 
 workers = []
 batches = []
@@ -156,7 +177,7 @@ nbOfForks.times do
         bundle.each do |pos|
           # p pos
           map[pos["y"]][pos["x"]] = "#"
-          _, loop_detected = simulate_guard(map, startCoordinates, vector, pos)
+          loop_detected = simulate_guard_loop(map, startCoordinates, vector)
           map[pos["y"]][pos["x"]] = "."
           if loop_detected
             worker.puts "1"
