@@ -80,14 +80,9 @@ def getNumberOfPaths(trailHead, input)
     9 => [],
   }
   region[1] = findAdjacent([trailHead], 1, input)
-  region[2] = findAdjacent(region[1], 2, input)
-  region[3] = findAdjacent(region[2], 3, input)
-  region[4] = findAdjacent(region[3], 4, input)
-  region[5] = findAdjacent(region[4], 5, input)
-  region[6] = findAdjacent(region[5], 6, input)
-  region[7] = findAdjacent(region[6], 7, input)
-  region[8] = findAdjacent(region[7], 8, input)
-  region[9] = findAdjacent(region[8], 9, input)
+  for i in 2..9 do
+    region[i] = findAdjacent(region[i - 1], i, input)
+  end
   return region[9].length
 end
 
